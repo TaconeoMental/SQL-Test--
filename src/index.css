@@ -59,6 +59,7 @@ body, html {
 .sql-show {
     font-family: monospace;
     font-size: 1.3rem;
+    padding-bottom: 15px;
 }
 
 .input-boxes {

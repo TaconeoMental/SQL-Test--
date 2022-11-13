@@ -1,24 +1,29 @@
-var sqliteParser = require('sqlite-parser');
+const { Parser } = require('node-sql-parser')
 
 export default class SQLReducer {
-    constructor(query) {
-        this.query = query
-        this.ast = sqliteParser(query)
+    constructor() {
+        this.query = ""
+        this.parser = new Parser()
     }
 
     eval_node(node) {
     }
 
-    eval_query(program) {
-        if (program && program["variant"] == "list") {
-            console.log(program["statement"])
-            for (var statement in program["statement"]) {
-                this.eval_node(statement)
-            }
+    get_reduced(query) {
+        try {
+            var ast = this.parser.astify(query)
+            //console.log(ast)
+        } catch (err) {
+            //console.log(err)
+            return
         }
-    }
 
-    get_reduced() {
-        this.eval_query(this.ast)
+        var level = 0
+        var statements = [query]
+        //while (this.is_reducible_level(level)) {
+            //this.eval_query(this.ast)
+            //var reduced_ast = this.reduce_level(level)
+        //}
+        return statements
     }
 }

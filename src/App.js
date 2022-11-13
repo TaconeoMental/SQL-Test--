@@ -7,14 +7,12 @@ import React from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { sql } from '@codemirror/lang-sql';
 import { githubDark } from '@uiw/codemirror-theme-github';
-import { EditorView, keymap } from "@codemirror/view"
 
 class  App extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             form_fields: {},
-
             template: new Template(""),
             replaced_query: ""
         }
@@ -34,7 +32,7 @@ class  App extends React.Component {
 
         this.setState({
             form_fields: new_fields,
-            template: template,
+            template: template
         })
 
         this.update_query()
@@ -46,16 +44,19 @@ class  App extends React.Component {
             replace_dict[name] = this.state.form_fields[name].value||this.state.form_fields[name].default
         })
 
-        this.setState({
-            replaced_query: this.state.template.build(replace_dict)
+        this.setState((state) => {
+            return {replaced_query: state.template.build(replace_dict)}
         })
 
-        var s = new SQLReducer(this.state.replaced_query)
-        s.get_reduced()
     }
 
-    handle_form_change = (name, value) => {
-        this.state.form_fields[name].value = value
+    handle_form_change = (e) => {
+        var new_dict = this.state.form_fields
+        new_dict[e.target.name].value = e.target.value
+
+        this.setState((state) => {
+            return {form_fields: new_dict}
+        })
         this.update_query()
     }
 
@@ -73,9 +74,7 @@ class  App extends React.Component {
                             sql({upperCaseKeywords: true})
                         ]}
                         theme={ githubDark }
-                        onChange={(value, view_update) => {
-                            this.handle_editor_change(value)
-                        }}
+                        onChange={this.handle_editor_change}
                     />
                 </div>
                 <div className="column-left">
@@ -89,9 +88,7 @@ class  App extends React.Component {
                                         className="user-input"
                                         placeholder={this.state.form_fields[item].default}
                                         name={item}
-                                        onChange={(e) => {
-                                            this.handle_form_change(e.target.name, e.target.value)
-                                        }}
+                                        onChange={this.handle_form_change}
                                     />
                                 </div>
                             )
